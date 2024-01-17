@@ -1,5 +1,6 @@
 import os
 import json
+from ytmusicapi import YTMusic
 import math
 import time
 import spotipy
@@ -98,7 +99,8 @@ while True:
 
     print("\n\nWelcome to PlaylistSync")
     print("1. Retrieve the song list from a playlist")
-    print("2. Exit")
+    print("2. Create a new playlist on Youtube with the extracted songs")
+    print("3. Exit")
     choice = input("Choice: ")
 
     if choice == "1":
@@ -115,4 +117,24 @@ while True:
         doc.close()
 
     if choice == "2":
+        ytmusic = YTMusic("oauth.json")
+
+        playlist = open("./playlist.txt", "r", encoding='utf-8')
+
+        playlistId = ytmusic.create_playlist("Transferred", "Playlist from Spotify")
+
+        for song in playlist:
+            time.sleep(1)
+            search_results = ytmusic.search(str(song))
+
+            for result in search_results:
+                if 'videoId' in result:
+                    print("\n\n\n")
+                    print(json.dumps(result['title'], sort_keys=True, indent=4))
+                    ytmusic.add_playlist_items(playlistId, [result['videoId']])
+                    break
+
+        playlist.close()
+
+    if choice == "3":
         break
