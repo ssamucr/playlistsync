@@ -1,4 +1,5 @@
-*.txt
+credentials.txt
+playlist.txt
 .idea/
 .cache
 *.json
